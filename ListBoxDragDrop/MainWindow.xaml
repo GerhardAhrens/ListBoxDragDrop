@@ -16,12 +16,12 @@
 
     <Window.Resources>
         <sys:String x:Key="ampersand">&amp;</sys:String>
-
     </Window.Resources>
 
     <Grid x:Name="gridMain">
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
+            <RowDefinition Height="25" />
+            <RowDefinition Height="30" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
@@ -30,6 +30,13 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal">
+            <Button
+                Width="100"
+                Height="25"
+                Content="Neu" />
+        </StackPanel>
 
         <TextBlock Grid.ColumnSpan="3" FontSize="14">
             <Run Text="ListBox mit" />
@@ -46,28 +53,200 @@
             VerticalAlignment="Bottom"
             Fill="Blue" />
 
-        <ListBox
-            x:Name="LbWorkItem"
-            Grid.Row="1"
+        <Border
+            Grid.Row="2"
             Grid.Column="0"
             Margin="5,0,0,5"
-            VerticalAlignment="Stretch"
-            AllowDrop="True" />
+            BorderBrush="Black"
+            BorderThickness="2,2,0.5,2">
+            <ListBox
+                x:Name="LbWorkItem"
+                VerticalAlignment="Stretch"
+                AllowDrop="True">
+                <ListBox.Template>
+                    <ControlTemplate>
+                        <DockPanel LastChildFill="True">
+                            <Grid Height="20" DockPanel.Dock="Top">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    Grid.Column="0"
+                                    HorizontalAlignment="Center"
+                                    FontSize="14"
+                                    FontWeight="Medium"
+                                    Text="Alle Aufgaben" />
+                                <Rectangle
+                                    Grid.Row="0"
+                                    Grid.ColumnSpan="3"
+                                    Height="1"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Bottom"
+                                    Fill="Blue" />
+                            </Grid>
+                            <ItemsPresenter />
+                        </DockPanel>
+                    </ControlTemplate>
+                </ListBox.Template>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            Padding="3"
+                            BorderBrush="Black"
+                            BorderThickness="1"
+                            CornerRadius="4">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto" />
+                                    <RowDefinition Height="Auto" />
+                                </Grid.RowDefinitions>
+                                <TextBlock
+                                    Grid.Row="0"
+                                    Grid.Column="0"
+                                    FontSize="13"
+                                    FontWeight="Bold"
+                                    Text="{Binding Path=Titel}" />
 
-        <ListBox
-            x:Name="LbInArbeit"
-            Grid.Row="1"
+                                <TextBlock Grid.Row="1" Grid.Column="0">
+                                    <Run Foreground="Blue" Text="{Binding Path=Status}" />
+                                    <Run Text="Start" />
+                                    <Run FontWeight="Medium" Text="{Binding Path=WorkDate, StringFormat=d, ConverterCulture=de-DE}" />
+                                </TextBlock>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Border>
+
+        <Border
+            Grid.Row="2"
             Grid.Column="1"
-            Margin="0,0,0,5"
-            VerticalAlignment="Stretch"
-            AllowDrop="True" />
+            Margin="0.5,0,0,5"
+            BorderBrush="Black"
+            BorderThickness="0,2,0,2">
+            <ListBox
+                x:Name="LbInArbeit"
+                VerticalAlignment="Stretch"
+                AllowDrop="True">
+                <ListBox.Template>
+                    <ControlTemplate>
+                        <DockPanel LastChildFill="True">
+                            <Grid Height="20" DockPanel.Dock="Top">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    Grid.Column="0"
+                                    HorizontalAlignment="Center"
+                                    FontSize="14"
+                                    FontWeight="Medium"
+                                    Text="In Arbeit" />
+                                <Rectangle
+                                    Grid.Row="0"
+                                    Grid.ColumnSpan="3"
+                                    Height="1"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Bottom"
+                                    Fill="Blue" />
+                            </Grid>
+                            <ItemsPresenter />
+                        </DockPanel>
+                    </ControlTemplate>
+                </ListBox.Template>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                FontSize="13"
+                                FontWeight="Bold"
+                                Text="{Binding Path=Titel}" />
 
-        <ListBox
-            x:Name="LbFertig"
-            Grid.Row="1"
+                            <TextBlock Grid.Row="1" Grid.Column="0">
+                                <Run Foreground="Orange" Text="{Binding Path=Status}" />
+                                <Run Text="Start" />
+                                <Run FontWeight="Medium" Text="{Binding Path=WorkDate, StringFormat=d, ConverterCulture=de-DE}" />
+                            </TextBlock>
+
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Border>
+
+        <Border
+            Grid.Row="2"
             Grid.Column="2"
             Margin="0,0,5,5"
-            VerticalAlignment="Stretch"
-            AllowDrop="True" />
+            BorderBrush="Black"
+            BorderThickness="0.5,2,2,2">
+            <ListBox
+                x:Name="LbFertig"
+                VerticalAlignment="Stretch"
+                AllowDrop="True">
+                <ListBox.Template>
+                    <ControlTemplate>
+                        <DockPanel LastChildFill="True">
+                            <Grid Height="20" DockPanel.Dock="Top">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock
+                                    Grid.Column="0"
+                                    HorizontalAlignment="Center"
+                                    FontSize="14"
+                                    FontWeight="Medium"
+                                    Text="Fertig gestellt" />
+                                <Rectangle
+                                    Grid.Row="0"
+                                    Grid.ColumnSpan="3"
+                                    Height="1"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Bottom"
+                                    Fill="Green" />
+                            </Grid>
+                            <ItemsPresenter />
+                        </DockPanel>
+                    </ControlTemplate>
+                </ListBox.Template>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,2">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                FontSize="13"
+                                FontWeight="Bold"
+                                Text="{Binding Path=Titel}" />
+
+                            <TextBlock Grid.Row="1" Grid.Column="0">
+                                <Run Foreground="Green" Text="{Binding Path=Status}" />
+                                <Run Text="Start" />
+                                <Run FontWeight="Medium" Text="{Binding Path=WorkDate, StringFormat=d, ConverterCulture=de-DE}" />
+                            </TextBlock>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Border>
     </Grid>
 </Window>

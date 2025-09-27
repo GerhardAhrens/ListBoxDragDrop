@@ -57,9 +57,9 @@ namespace ListBoxDragDrop
             }
         }
 
-        private ObservableCollection<string> _KanbanItem;
+        private ObservableCollection<KanbanItem> _KanbanItem;
 
-        public ObservableCollection<string> KanbanItem
+        public ObservableCollection<KanbanItem> KanbanItem
         {
             get { return _KanbanItem; }
             set
@@ -84,13 +84,13 @@ namespace ListBoxDragDrop
             WeakEventManager<ListBox, DragEventArgs>.AddHandler(this.LbFertig, "Drop", this.OnDrop);
 
 
-            this.KanbanItem = new ObservableCollection<string>
-            {
-                "Item 1",
-                "Item 2",
-                "Item 3",
-                "Item 4",
-                "Item 5",
+            this.KanbanItem = new ObservableCollection<KanbanItem>()
+            { 
+                new KanbanItem("Aufgabe 1"),
+                new KanbanItem("Aufgabe 2"),
+                new KanbanItem("Aufgabe 3"),
+                new KanbanItem("Aufgabe 4"),
+                new KanbanItem("Aufgabe 5"),
             };
 
             this.LbWorkItem.ItemsSource = this.KanbanItem;
@@ -136,7 +136,7 @@ namespace ListBoxDragDrop
             ListBox parent = (ListBox)sender;
             if (parent.Name == this.LbWorkItem.Name)
             {
-                object data = e.Data.GetData(typeof(string));
+                object data = e.Data.GetData(typeof(KanbanItem));
                 if (dragSource != null)
                 {
                     if (((IList)parent.Items).Contains(data) == false)
@@ -150,13 +150,15 @@ namespace ListBoxDragDrop
                             ((IList)dragSource.Items).Remove(data);
                         }
 
-                       ((IList)parent.ItemsSource).Add(data);
+                        ((KanbanItem)data).Status = "Neu";
+                        ((KanbanItem)data).WorkDate = DateTime.Now;
+                        ((IList)parent.ItemsSource).Add(data);
                     }
                 }
             }
             else if (parent.Name == this.LbInArbeit.Name)
             {
-                object data = e.Data.GetData(typeof(string));
+                object data = e.Data.GetData(typeof(KanbanItem));
                 if (dragSource != null)
                 {
                     if (((IList)parent.Items).Contains(data) == false)
@@ -170,13 +172,15 @@ namespace ListBoxDragDrop
                             ((IList)dragSource.Items).Remove(data);
                         }
 
+                        ((KanbanItem)data).Status = "In Arbeit";
+                        ((KanbanItem)data).WorkDate = DateTime.Now;
                         ((IList)parent.Items).Add(data);
                     }
                 }
             }
             else if (parent.Name == this.LbFertig.Name)
             {
-                object data = e.Data.GetData(typeof(string));
+                object data = e.Data.GetData(typeof(KanbanItem));
                 if (dragSource != null)
                 {
                     if (((IList)parent.Items).Contains(data) == false)
@@ -190,6 +194,8 @@ namespace ListBoxDragDrop
                             ((IList)dragSource.Items).Remove(data);
                         }
 
+                        ((KanbanItem)data).Status = "Ferig";
+                        ((KanbanItem)data).WorkDate = DateTime.Now;
                         ((IList)parent.Items).Add(data);
                     }
                 }
@@ -240,5 +246,21 @@ namespace ListBoxDragDrop
             handler(this, e);
         }
         #endregion INotifyPropertyChanged implementierung
+    }
+
+    public class KanbanItem
+    {
+        public KanbanItem(string titel)
+        {
+            this.Id = Guid.NewGuid();
+            this.Titel = titel;
+            this.Status = "Neu";
+            this.WorkDate = DateTime.Now;
+        }
+
+        public Guid Id { get; set; }
+        public string Titel { get; set; }
+        public string Status { get; set; }
+        public DateTime WorkDate { get; set; }
     }
 }
