@@ -72,10 +72,11 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock
                                     Grid.Column="0"
-                                    HorizontalAlignment="Center"
+                                    HorizontalAlignment="Stretch"
                                     FontSize="14"
                                     FontWeight="Medium"
-                                    Text="Alle Aufgaben" />
+                                    Text="Alle Aufgaben"
+                                    TextAlignment="Center" />
                                 <Rectangle
                                     Grid.Row="0"
                                     Grid.ColumnSpan="3"
@@ -141,10 +142,11 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock
                                     Grid.Column="0"
-                                    HorizontalAlignment="Center"
+                                    HorizontalAlignment="Stretch"
                                     FontSize="14"
                                     FontWeight="Medium"
-                                    Text="In Arbeit" />
+                                    Text="In Arbeit"
+                                    TextAlignment="Center" />
                                 <Rectangle
                                     Grid.Row="0"
                                     Grid.ColumnSpan="3"
@@ -205,10 +207,11 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock
                                     Grid.Column="0"
-                                    HorizontalAlignment="Center"
+                                    HorizontalAlignment="Stretch"
                                     FontSize="14"
                                     FontWeight="Medium"
-                                    Text="Fertig gestellt" />
+                                    Text="Fertig gestellt"
+                                    TextAlignment="Center" />
                                 <Rectangle
                                     Grid.Row="0"
                                     Grid.ColumnSpan="3"

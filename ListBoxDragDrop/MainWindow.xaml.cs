@@ -18,9 +18,12 @@ namespace ListBoxDragDrop
     using System.Collections;
     using System.Collections.ObjectModel;
     using System.ComponentModel;
+    using System.Diagnostics;
     using System.Runtime.CompilerServices;
+    using System.Runtime.InteropServices;
     using System.Windows;
     using System.Windows.Controls;
+    using System.Windows.Controls.Primitives;
     using System.Windows.Input;
     using System.Windows.Media;
 
@@ -31,11 +34,14 @@ namespace ListBoxDragDrop
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private ListBox dragSource = new ListBox();
+        private Popup dragPopup;
 
         public MainWindow()
         {
             this.InitializeComponent();
             WeakEventManager<Window, RoutedEventArgs>.AddHandler(this, "Loaded", this.OnLoaded);
+
+            this.CreateDragPopup();
 
             this.WindowTitel = "ListBox mit Drag & Drop Funktion";
             this.DataContext = this;
@@ -106,7 +112,15 @@ namespace ListBoxDragDrop
 
                 if (data != null)
                 {
+                    // Position des Popups aktualisieren
+                    this.PreviewMouseMove += this.Window_MouseMove;
+                    dragPopup.IsOpen = true;
+
                     DragDrop.DoDragDrop(parent, data, DragDropEffects.Move);
+
+                    // Nach Drag & Drop schließen
+                    dragPopup.IsOpen = false;
+                    this.PreviewMouseMove -= this.Window_MouseMove;
                 }
             }
             else if (parent.Name == this.LbInArbeit.Name)
@@ -116,7 +130,15 @@ namespace ListBoxDragDrop
 
                 if (data != null)
                 {
+                    // Position des Popups aktualisieren
+                    this.PreviewMouseMove += Window_MouseMove;
+                    dragPopup.IsOpen = true;
+
                     DragDrop.DoDragDrop(parent, data, DragDropEffects.Move);
+
+                    // Nach Drag & Drop schließen
+                    dragPopup.IsOpen = false;
+                    this.PreviewMouseMove -= Window_MouseMove;
                 }
             }
             else if (parent.Name == this.LbFertig.Name)
@@ -126,7 +148,15 @@ namespace ListBoxDragDrop
 
                 if (data != null)
                 {
+                    // Position des Popups aktualisieren
+                    MouseMove += Window_MouseMove;
+                    dragPopup.IsOpen = true;
+
                     DragDrop.DoDragDrop(parent, data, DragDropEffects.Move);
+
+                    // Nach Drag & Drop schließen
+                    dragPopup.IsOpen = false;
+                    MouseMove -= Window_MouseMove;
                 }
             }
         }
@@ -202,6 +232,17 @@ namespace ListBoxDragDrop
             }
         }
 
+        private void Window_MouseMove(object sender, MouseEventArgs e)
+        {
+            Point pos = CursorHelper.GetCurrentCursorPosition(this);
+            Point position = e.GetPosition(this);
+            Debug.WriteLine($"{position.X};{position.Y};{e.LeftButton}");
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                dragPopup.HorizontalOffset = position.X + 20;
+                dragPopup.VerticalOffset = position.Y + 10;
+            }
+        }
 
         private static object GetDataFromListBox(ListBox source, Point point)
         {
@@ -233,6 +274,30 @@ namespace ListBoxDragDrop
             return null;
         }
 
+        private void CreateDragPopup()
+        {
+            dragPopup = new Popup
+            {
+                AllowsTransparency = true,
+                Placement = PlacementMode.Mouse,
+                PopupAnimation = PopupAnimation.Fade,
+                StaysOpen = true,
+                IsOpen = false,
+                Child = new Border
+                {
+                    Background = Brushes.LightYellow,
+                    BorderBrush = Brushes.Gray,
+                    BorderThickness = new Thickness(1),
+                    Padding = new Thickness(5),
+                    Child = new TextBlock
+                    {
+                        Text = "Tooltip beim Draggen",
+                        Foreground = Brushes.Black
+                    }
+                }
+            };
+        }
+
         #region INotifyPropertyChanged implementierung
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
@@ -246,6 +311,27 @@ namespace ListBoxDragDrop
             handler(this, e);
         }
         #endregion INotifyPropertyChanged implementierung
+    }
+
+    public static class CursorHelper
+    {
+        [StructLayout(LayoutKind.Sequential)]
+        struct Win32Point
+        {
+            public Int32 X;
+            public Int32 Y;
+        };
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool GetCursorPos(ref Win32Point pt);
+
+        public static Point GetCurrentCursorPosition(Visual relativeTo)
+        {
+            Win32Point w32Mouse = new Win32Point();
+            GetCursorPos(ref w32Mouse);
+            return relativeTo.PointFromScreen(new Point(w32Mouse.X, w32Mouse.Y));
+        }
     }
 
     public class KanbanItem
