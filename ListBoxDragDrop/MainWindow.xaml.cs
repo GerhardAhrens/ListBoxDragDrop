@@ -89,6 +89,7 @@ namespace ListBoxDragDrop
             WeakEventManager<ListBox, MouseButtonEventArgs>.AddHandler(this.LbFertig, "PreviewMouseLeftButtonDown", this.OnPreviewMouseLeftButtonDown);
             WeakEventManager<ListBox, DragEventArgs>.AddHandler(this.LbFertig, "Drop", this.OnDrop);
 
+            this.ListBoxFrame.MouseMove += this.OnMouseMoveHandler;
 
             this.KanbanItem = new ObservableCollection<KanbanItem>()
             { 
@@ -113,14 +114,14 @@ namespace ListBoxDragDrop
                 if (data != null)
                 {
                     // Position des Popups aktualisieren
-                    this.PreviewMouseMove += this.Window_MouseMove;
+                    //this.ListBoxFrame.MouseMove += this.OnMouseMoveHandler;
                     dragPopup.IsOpen = true;
 
                     DragDrop.DoDragDrop(parent, data, DragDropEffects.Move);
 
                     // Nach Drag & Drop schließen
                     dragPopup.IsOpen = false;
-                    this.PreviewMouseMove -= this.Window_MouseMove;
+                    //this.ListBoxFrame.MouseMove -= this.OnMouseMoveHandler;
                 }
             }
             else if (parent.Name == this.LbInArbeit.Name)
@@ -131,14 +132,14 @@ namespace ListBoxDragDrop
                 if (data != null)
                 {
                     // Position des Popups aktualisieren
-                    this.PreviewMouseMove += Window_MouseMove;
+                    //this.gridMain.MouseMove += this.OnMouseMoveHandler;
                     dragPopup.IsOpen = true;
 
                     DragDrop.DoDragDrop(parent, data, DragDropEffects.Move);
 
                     // Nach Drag & Drop schließen
                     dragPopup.IsOpen = false;
-                    this.PreviewMouseMove -= Window_MouseMove;
+                    //this.gridMain.MouseMove -= this.OnMouseMoveHandler;
                 }
             }
             else if (parent.Name == this.LbFertig.Name)
@@ -149,14 +150,14 @@ namespace ListBoxDragDrop
                 if (data != null)
                 {
                     // Position des Popups aktualisieren
-                    MouseMove += Window_MouseMove;
+                    //this.gridMain.MouseMove += this.OnMouseMoveHandler;
                     dragPopup.IsOpen = true;
 
                     DragDrop.DoDragDrop(parent, data, DragDropEffects.Move);
 
                     // Nach Drag & Drop schließen
                     dragPopup.IsOpen = false;
-                    MouseMove -= Window_MouseMove;
+                    //this.gridMain.MouseMove -= this.OnMouseMoveHandler;
                 }
             }
         }
@@ -232,16 +233,18 @@ namespace ListBoxDragDrop
             }
         }
 
-        private void Window_MouseMove(object sender, MouseEventArgs e)
+        private void OnMouseMoveHandler(object sender, MouseEventArgs e)
         {
-            Point pos = CursorHelper.GetCurrentCursorPosition(this);
-            Point position = e.GetPosition(this);
-            Debug.WriteLine($"{position.X};{position.Y};{e.LeftButton}");
+            Point position = e.GetPosition(this.ListBoxFrame);
+            Debug.WriteLine($"{position.X};{position.Y};{e.LeftButton};{sender}");
             if (e.LeftButton == MouseButtonState.Pressed)
             {
+                this.DragMove();
                 dragPopup.HorizontalOffset = position.X + 20;
                 dragPopup.VerticalOffset = position.Y + 10;
             }
+
+            e.Handled = true;
         }
 
         private static object GetDataFromListBox(ListBox source, Point point)
